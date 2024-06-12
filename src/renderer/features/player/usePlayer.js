@@ -44,7 +44,7 @@ function PlayerProvider({ filePath, identifierColor, identifier, children }) {
     const averageColor = getAverageColor(metadataFromFilesystem.artwork);
     const dominantColors = await getDominantColors(metadataFromFilesystem.artwork);
     setBgColorFromArtwork(
-      `linear-gradient(to bottom, rgba(${dominantColors[0]}, 0.7), rgba(${dominantColors[1]}, 0.5))`,
+      `linear-gradient(to bottom, rgba(${dominantColors[1]}, 0.5), rgba(${dominantColors[1]}, 0.7))`,
     );
     setTextColor(getContrastColor(averageColor));
     setAudio(playerFromFilesystem);

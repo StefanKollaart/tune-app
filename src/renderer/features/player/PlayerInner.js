@@ -6,7 +6,7 @@ import { usePlayer } from './usePlayer';
 const PlayerContainer = styled.div`
   margin: 0;
   border: 1px solid var(--border-color);
-  padding: 10px;
+  padding: 15px 20px;
   background-image: ${(props) => props.background};
   display: grid;
   grid-template-columns: 1fr;
