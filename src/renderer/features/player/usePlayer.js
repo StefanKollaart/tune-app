@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import { getAverageColor, getContrastColor } from '../../utils/image';
+import { getAverageColor, getContrastColor, getDominantColors } from '../../utils/image';
 
 const PlayerContext = createContext(undefined);
 
@@ -25,6 +25,7 @@ function PlayerProvider({ filePath, identifierColor, identifier, children }) {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volumeBars, setVolumeBars] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // External Functions
   const play = () => {
@@ -41,8 +42,9 @@ function PlayerProvider({ filePath, identifierColor, identifier, children }) {
     const metadataFromFilesystem = await window.API.fetchMetadata(filePath);
     const playerFromFilesystem = new Audio(`file://${filePath}`);
     const averageColor = getAverageColor(metadataFromFilesystem.artwork);
+    const dominantColors = await getDominantColors(metadataFromFilesystem.artwork);
     setBgColorFromArtwork(
-      `rgb(${averageColor.r}, ${averageColor.g}, ${averageColor.b})`,
+      `linear-gradient(to bottom, rgba(${dominantColors[0]}, 0.7), rgba(${dominantColors[1]}, 0.5))`,
     );
     setTextColor(getContrastColor(averageColor));
     setAudio(playerFromFilesystem);
@@ -68,6 +70,7 @@ function PlayerProvider({ filePath, identifierColor, identifier, children }) {
 
       const update = () => {
         setCurrentTime(audio.currentTime);
+        setIsPlaying(!audio.paused);
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
         analyser.getByteFrequencyData(frequencyData);
 
@@ -104,6 +107,7 @@ function PlayerProvider({ filePath, identifierColor, identifier, children }) {
       identifier,
       bgColorFromArtwork,
       volumeBars,
+      isPlaying,
       play,
       seekTo,
       setAudio,
@@ -123,3 +127,4 @@ function usePlayer() {
 }
 
 export { PlayerProvider, usePlayer };
+6

@@ -6,7 +6,12 @@ import { usePlayer } from './usePlayer';
 const PlayerContainer = styled.div`
   margin: 0;
   border: 1px solid var(--border-color);
-  background: ${(props) => props.background};
+  padding: 10px;
+  background-image: ${(props) => props.background};
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  border-radius: 10px;
 `;
 
 export default function PlayerInner() {
