@@ -7,6 +7,7 @@ import React, {
   useRef,
 } from 'react';
 import { getAverageColor, getContrastColor, getDominantColors } from '../../utils/image';
+import { createAudioContext, findFadeOutPoint, getVolume } from '../../utils/audio';
 
 const PlayerContext = createContext(undefined);
 
@@ -38,33 +39,21 @@ function PlayerProvider({ artist, title, filePath, artwork, identifierColor, ide
   useEffect(() => {
     const newAudio = new Audio(`file://${filePath}`);
     setAudio(newAudio);
-  }, [filePath]);
 
-  useEffect(() => {
-    if (audio) {
+    if (newAudio) {
       // Create and connect the AnalyserNode
-      const audioContext = new (window.AudioContext ||
-        window.webkitAudioContext)();
-      const analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaElementSource(audio);
-      source.connect(analyser);
-      analyser.connect(audioContext.destination);
+      const {audioContext, analyser } = createAudioContext(newAudio);
 
       const handleLoadedMetadata = () => {
-        setDuration(audio.duration);
+        setDuration(newAudio.duration);
       };
 
-      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+      newAudio.addEventListener('loadedmetadata', handleLoadedMetadata);
 
       const update = () => {
-        setCurrentTime(audio.currentTime);
-        setIsPlaying(!audio.paused);
-        const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-        analyser.getByteFrequencyData(frequencyData);
-
-        const volume =
-          frequencyData.reduce((a, b) => a + b) / frequencyData.length;
-        setVolumeBars(Math.floor(volume / 8));
+        setCurrentTime(newAudio.currentTime);
+        setIsPlaying(!newAudio.paused);
+        setVolumeBars(getVolume(analyser));
 
         // Call update again on the next frame
         requestAnimationFrame(update);
@@ -78,7 +67,7 @@ function PlayerProvider({ artist, title, filePath, artwork, identifierColor, ide
         cancelAnimationFrame(update);
       };
     }
-  }, [audio]);
+  }, [filePath]);
 
   // Value & provider
   const value = useMemo(() => {

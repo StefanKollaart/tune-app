@@ -21,7 +21,9 @@ function MainPlayerList() {
           artwork={item.artwork}
           title={item.title} 
           artist={item.artist} 
-          duration={item.duration} 
+          duration={item.duration}
+          bgColor={item.bgColor}
+          fadeOutPoint={item.fadeOutPoint}
         />
       ))}
     </MainPlayerListContainer>

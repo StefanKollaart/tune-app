@@ -8,6 +8,7 @@ export default function MainPlayerListHeader() {
       <Text fontWeight={700}>Titel</Text>
       <Text fontWeight={700}>Artiest</Text>
       <Text fontWeight={700}>Duur</Text>
+      <Text fontWeight={700}>Mixpunt</Text>
     </MainPlayerListItemContainer>
   );
 }
