@@ -6,7 +6,7 @@ const PlayerBarContainer = styled.div`
   height: 35px;
   background-color: var(--dark-grey);
   position: relative;
-  border-radius: 20px;
+  border-radius: var(--border-radius);
   overflow: hidden;
 `;
 

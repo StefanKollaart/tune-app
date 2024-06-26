@@ -16,18 +16,18 @@ const Artwork = styled.img`
   transition: width 0.4s, height 0.4s;
   object-fit: cover;
   aspect-ratio: 1/1;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
 `;
 
 // component PlayerArtwork that gets send a src as a base64 string
 export default function PlayerArtwork() {
-  const { metadata, isPlaying } = usePlayer();
+  const { artwork, isPlaying } = usePlayer();
 
-  if (metadata === null) return null;
+  if (artwork === null) return null;
 
   return (
     <ArtworkContainer>
-      <Artwork isPlaying={isPlaying} src={metadata.artwork} />
+      <Artwork isPlaying={isPlaying} src={artwork} />
     </ArtworkContainer>
   );
 }

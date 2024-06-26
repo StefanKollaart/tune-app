@@ -14,18 +14,18 @@ const PlayerButtons = styled.div`
 
 export default function PlayerData() {
   const player = usePlayer();
-  const { metadata, audio } = player;
+  const { title, artist, audio } = player;
 
   const isPlaying = audio && !audio.paused;
 
   return (
     <PlayerDataContainer>
       <Text fontWeight={600} fontSize={1.4} marginBottom={0.5}>
-        {(metadata && metadata.title) ?? 'Geen nummer'}
+        {title ?? 'Geen nummer'}
       </Text>
-      <Text marginBottom={1}>{(metadata && metadata.artist) ?? ''}</Text>
+      <Text marginBottom={1}>{artist ?? ''}</Text>
       <PlayerButtons>
-        {isPlaying && <FaPause />}
+        {isPlaying && <FaPause onClick={player.pause} />}
         {!isPlaying && <FaPlay onClick={player.play} />}
         <FaStop />
       </PlayerButtons>

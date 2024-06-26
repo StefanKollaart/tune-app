@@ -61,38 +61,34 @@ export const getContrastColor = (rgb) => {
   return textContrast;
 };
 
-export const getDominantColors = (filePath) => {
-  return new Promise((resolve, reject) => {
-    const imgEl = document.createElement('img');
-    imgEl.src = filePath;
-    imgEl.crossOrigin = 'Anonymous';
+export const getDominantColors = async (base64Image) => {
+  const imgEl = document.createElement('img');
+  imgEl.src = base64Image;
 
-    imgEl.onload = function () {
-      const canvas = document.createElement('canvas');
-      canvas.width = imgEl.width;
-      canvas.height = imgEl.height;
-
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(imgEl, 0, 0, imgEl.width, imgEl.height);
-
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-      const colorFrequencies = {};
-
-      for (let i = 0; i < imageData.length; i += 4) {
-        const color = `${imageData[i]},${imageData[i + 1]},${imageData[i + 2]}`;
-        colorFrequencies[color] = (colorFrequencies[color] || 0) + 1;
-      }
-
-      const dominantColors = Object.entries(colorFrequencies)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 2)
-        .map(([color]) => color);
-
-      resolve(dominantColors);
-    };
-
-    imgEl.onerror = function (error) {
-      reject(error);
-    };
+  await new Promise((resolve, reject) => {
+    imgEl.onload = resolve;
+    imgEl.onerror = reject;
   });
+
+  const canvas = document.createElement('canvas');
+  canvas.width = imgEl.width;
+  canvas.height = imgEl.height;
+
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(imgEl, 0, 0, imgEl.width, imgEl.height);
+
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  const colorFrequencies = {};
+
+  for (let i = 0; i < imageData.length; i += 4) {
+    const color = `${imageData[i]},${imageData[i + 1]},${imageData[i + 2]}`;
+    colorFrequencies[color] = (colorFrequencies[color] || 0) + 1;
+  }
+
+  const dominantColors = Object.entries(colorFrequencies)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 2)
+    .map(([color]) => color);
+
+  return dominantColors;
 };

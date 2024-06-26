@@ -22,7 +22,7 @@ const PlayerIdentifier = styled.div`
   align-items: center;
   font-weight: 800;
   background-color: ${(props) => props.color};
-  border-radius: 5px;
+  border-radius: var(--border-radius);
 `;
 
 export default function PlayerMeta() {

@@ -10,16 +10,9 @@ import { getAverageColor, getContrastColor, getDominantColors } from '../../util
 
 const PlayerContext = createContext(undefined);
 
-function PlayerProvider({ filePath, identifierColor, identifier, children }) {
-  // Audio state
+function PlayerProvider({ artist, title, filePath, artwork, identifierColor, identifier, children }) {
+  // Audio object
   const [audio, setAudio] = useState(null);
-
-  // Metadata state
-  const [metadata, setMetadata] = useState(null);
-
-  // Colors
-  const [bgColorFromArtwork, setBgColorFromArtwork] = useState('transparent');
-  const [textColor, setTextColor] = useState('white');
 
   // Play state
   const [currentTime, setCurrentTime] = useState(0);
@@ -32,26 +25,21 @@ function PlayerProvider({ filePath, identifierColor, identifier, children }) {
     audio.play();
   };
 
+  const pause = () => {
+    audio.pause();
+  }
+
   const seekTo = (percentage) => {
     const time = (percentage / 100) * duration;
     audio.currentTime = time;
   };
 
-  // Internal functions
-  const fetchMetadata = async () => {
-    const metadataFromFilesystem = await window.API.fetchMetadata(filePath);
-    const playerFromFilesystem = new Audio(`file://${filePath}`);
-    const averageColor = getAverageColor(metadataFromFilesystem.artwork);
-    const dominantColors = await getDominantColors(metadataFromFilesystem.artwork);
-    setBgColorFromArtwork(
-      `linear-gradient(to bottom, rgba(${dominantColors[1]}, 0.5), rgba(${dominantColors[1]}, 0.7))`,
-    );
-    setTextColor(getContrastColor(averageColor));
-    setAudio(playerFromFilesystem);
-    setMetadata(metadataFromFilesystem);
-  };
-
   // Effects
+  useEffect(() => {
+    const newAudio = new Audio(`file://${filePath}`);
+    setAudio(newAudio);
+  }, [filePath]);
+
   useEffect(() => {
     if (audio) {
       // Create and connect the AnalyserNode
@@ -92,27 +80,24 @@ function PlayerProvider({ filePath, identifierColor, identifier, children }) {
     }
   }, [audio]);
 
-  useEffect(() => {
-    fetchMetadata();
-  }, [filePath]);
-
   // Value & provider
   const value = useMemo(() => {
     return {
       audio,
-      metadata,
       currentTime,
       duration,
       identifierColor,
       identifier,
-      bgColorFromArtwork,
       volumeBars,
       isPlaying,
+      artwork,
+      artist,
+      title,
       play,
+      pause,
       seekTo,
-      setAudio,
     };
-  }, [audio, metadata, currentTime]);
+  }, [title, artist, artwork, audio, currentTime]);
 
   return (
     <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>

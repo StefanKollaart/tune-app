@@ -42,7 +42,7 @@ const apiHandler = {
         title: common.title,
         artist: common.artist,
         filePath,
-        durationInSeconds: format.duration,
+        duration: format.duration,
         artwork,
       };
     } catch (error) {

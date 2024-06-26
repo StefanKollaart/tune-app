@@ -18,6 +18,7 @@ const GlobalStyles = createGlobalStyle`
         --bg-color: var(--grey);
         --text-color: var(--white);
         --border-color: var(--dark-grey);
+        --border-radius: 0.6rem;
     }
 
 
